@@ -21,13 +21,81 @@ You can also select a different voice and language. For details, see[the tutoria
 API Docs: https://cloud.ibm.com/apidocs/text-to-speech
 Python SDK: https://github.com/watson-developer-cloud/python-sdk
 
+To run: 
 
-Install `ibm-watson` python library
+1. Install `ibm-watson` python library
+    ```
+    pip install ibm-watson
+    ```
+
+2. Set the environment variables `TTS_API_KEY` and `TTS_SERVICE_URL`. They are the API key and service URL for the Text-to-Speech service on IBM Cloud that was created previously. 
+
+3. Run the Python script using the command below:
 ```
-pip install ibm-watson
+python3 1.tts.py
 ```
 
-# Speech-to-Text
+As a result, a file `output.wav` will be created in the same folder as `1-tts.py`. 
+
+## Speech-to-Text
 Create Speech-to-Text service on IBM Cloud
+
+To run:
+1. Set the environment variables `STT_API_KEY` and `STT_SERVICE_URL` 
+2. Run the following command:
+```
+python3 2-stt.py
+```
+
+The output looks like: 
+```
+python3 2-stt.py
+{
+  "result_index": 0,
+  "results": [
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "transcript": "hello world ",
+          "confidence": 0.99
+        }
+      ],
+      "word_alternatives": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.33,
+          "alternatives": [
+            {
+              "word": "hello",
+              "confidence": 1.0
+            }
+          ]
+        },
+        {
+          "start_time": 0.33,
+          "end_time": 0.81,
+          "alternatives": [
+            {
+              "word": "world",
+              "confidence": 0.96
+            }
+          ]
+        }
+      ],
+      "keywords_result": {
+        "hello": [
+          {
+            "start_time": 0.0,
+            "end_time": 0.33,
+            "confidence": 1.0,
+            "normalized_text": "hello"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 
 API Docs: https://cloud.ibm.com/apidocs/speech-to-text

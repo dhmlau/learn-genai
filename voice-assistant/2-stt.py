@@ -25,7 +25,7 @@ with open(join(dirname(__file__), './.', 'output.wav'),
         keywords_threshold=0.5
     ).get_result()
 
-print(json.dumps(speech_recognition_results, indent=2))
-# print(speech_recognition_results)
+#print(json.dumps(speech_recognition_results, indent=2))
 
-#print('transcript =', speech_recognition_results.results[0].alternatives[0].transcript)
+transcript = speech_recognition_results["results"][0]["alternatives"][0]["transcript"]
+print(transcript)

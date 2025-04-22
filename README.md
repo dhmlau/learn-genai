@@ -4,3 +4,4 @@ Notes and working apps from the [Building Generative AI-Powered Applications wit
 
 - [image captioning](./image-captioning/docs.md)
 - [chatbot](./chatbot/docs.md)
+- [voice assistant](./voice-assistant/docs.md)

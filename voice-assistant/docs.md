@@ -134,8 +134,11 @@ pip install transformers accelerate torch
 ## Step 4 - Putting everything together
 
 ```
-pip install flask
+pip install flask python-dotenv
 ```
+
+Read the API keys and service base urls from `.env` file instead of as an environment variable.
+Note: `.gitignore` is updated to make sure `.env` is not being pushed to GitHub.
 
 Project layout:
 ```

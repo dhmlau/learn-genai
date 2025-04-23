@@ -3,12 +3,14 @@
 from ibm_watson import TextToSpeechV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import os
+from dotenv import load_dotenv
+
+# Get API key and service URL from .env file
+load_dotenv()
+api_key = os.getenv('TTS_API_KEY')
+service_url = os.getenv('TTS_SERVICE_URL')
 
 def text_to_speech(text):
-    # Get API key and service URL from environment variable
-    api_key = os.getenv('TTS_API_KEY')
-    service_url = os.getenv('TTS_SERVICE_URL')
-
     authenticator = IAMAuthenticator(api_key)
     text_to_speech = TextToSpeechV1(
         authenticator=authenticator

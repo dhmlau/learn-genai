@@ -27,5 +27,6 @@ with open(join(dirname(__file__), './.', 'output.wav'),
 
 #print(json.dumps(speech_recognition_results, indent=2))
 
+# For simplicity sake, we're leaving out the error checking for now
 transcript = speech_recognition_results["results"][0]["alternatives"][0]["transcript"]
 print(transcript)

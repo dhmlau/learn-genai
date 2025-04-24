@@ -18,6 +18,8 @@ def text_to_speech(text):
 
     text_to_speech.set_service_url(service_url)
     
+    print('text_to_speech function - input:', text)
+
     response = text_to_speech.synthesize(
         voice='en-US_AllisonV3Voice',
         text=text,
@@ -26,5 +28,7 @@ def text_to_speech(text):
     audio_data = response.get_result().content
 
     # save the audio file to file
-    with open('output.wav', 'wb') as f:
+    with open('./static/output.wav', 'wb') as f:
         f.write(audio_data)
+
+    return './static/output.wav'

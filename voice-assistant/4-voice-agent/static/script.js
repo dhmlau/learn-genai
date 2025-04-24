@@ -30,21 +30,22 @@ const getSpeechToText = async (userRecording) => {
     method: "POST",
     body: userRecording.audioBlob,
   });
-  console.log(response);
-  response = await response.json();
-  console.log(response);
-  return response.text;
+
+  let text = await response.text();
+  console.log('getSpeechToText:',text);
+  return text;
 };
 
 const processUserMessage = async (userMessage) => {
+  console.log('process user message = ', userMessage);
   let response = await fetch(baseUrl + "/process-message", {
     method: "POST",
     headers: { Accept: "application/json", "Content-Type": "application/json" },
     body: JSON.stringify({ userMessage: userMessage, voice: voiceOption }),
   });
-  response = await response.json();
-  console.log(response);
-  return response;
+  let output_text = await response.text();
+  console.log(output_text);
+  return output_text;
 };
 
 const cleanTextInput = (value) => {
@@ -98,18 +99,17 @@ const toggleRecording = async () => {
   }
 };
 
-const playResponseAudio = (function () {
+const playResponseAudio = async (text) => {
+  let response = await fetch(baseUrl + "/text-to-speech", {
+    method: "POST",
+    body: JSON.stringify({ message: text}),
+  });
+  let url = await response.text();
   const df = document.createDocumentFragment();
-  return function Sound(src) {
-    const snd = new Audio(src);
-    df.appendChild(snd); // keep in fragment until finished playing
-    snd.addEventListener("ended", function () {
-      df.removeChild(snd);
-    });
-    snd.play();
-    return snd;
-  };
-})();
+  const snd = new Audio("/static/output.wav"); //hard coded the file path
+  snd.play();
+};
+
 
 const getRandomID = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -122,6 +122,7 @@ const scrollToBottom = () => {
   });
 };
 const populateUserMessage = (userMessage, userRecording) => {
+  console.log('populateUserMessage-userMessage:', userMessage);
   // Clear the input field
   $("#message-input").val("");
 
@@ -151,6 +152,7 @@ const populateUserMessage = (userMessage, userRecording) => {
 
 const populateBotResponse = async (userMessage) => {
   await showBotLoadingAnimation();
+  console.log('populateBotResponse: userMessage=', userMessage);
   const response = await processUserMessage(userMessage);
   responses.push(response);
 
@@ -162,11 +164,11 @@ const populateBotResponse = async (userMessage) => {
     `<div class='message-line'><div class='message-box${
       !lightMode ? " dark" : ""
     }'>${
-      response.openaiResponseText
-    }</div><button id='${repeatButtonID}' class='btn volume repeat-button' onclick='playResponseAudio("data:audio/wav;base64," + responses[botRepeatButtonIDToIndexMap[this.id]].openaiResponseSpeech);console.log(this.id)'><i class='fa fa-volume-up'></i></button></div>`
+      response
+    }</div><button id='${repeatButtonID}' class='btn volume repeat-button' onclick='playResponseAudio(responses[botRepeatButtonIDToIndexMap[this.id]]);console.log(this.id)'><i class='fa fa-volume-up'></i></button></div>`
   );
 
-  playResponseAudio("data:audio/wav;base64," + response.openaiResponseSpeech);
+  playResponseAudio(response);
 
   scrollToBottom();
 };

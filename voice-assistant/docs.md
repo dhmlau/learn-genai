@@ -1,10 +1,16 @@
 # Voice assistant
 
-- GPT-3: enable understanding and response
-- Watson Embeddable AI: Speech-to-Text (STT) and Text-to-Speech (TTS)
+This repo is originated from https://github.com/arora-r/chatapp-with-voice-and-openai-outline.git, mostly for the UI portion. I've deviated a bit on the backend components. 
 
-Repo: https://github.com/arora-r/chatapp-with-voice-and-openai-outline.git
+Here is the overview we're going to build for the voice assistant.
+![overview](./step4-overview.png)
 
+The application is under [4-voice-agent folder](./4-voice-agent/). To run the application, go to that directory, run:
+```
+python3 app.py
+```
+
+Here is the demo: [demo](./VoiceAssitant-demo.mp4). I've edited the video to remove or speed up the waiting time. 
 
 ## Step 1: Text-to-Speech
 
@@ -116,35 +122,60 @@ API Docs: https://cloud.ibm.com/apidocs/speech-to-text
 
 ## Step 3: OpenChat
 
-As one of the labs in the course [Building Generative AI-Powered Applications with Python](https://www.coursera.org/learn/building-gen-ai-powered-applications/home/welcome), it suggested to use the `gpt-4` model from OpenAI. Unfortunately, I was not able to get it to run without paying extra credits. As a result, I'm switching to use `openchat/openchat-3.5-1210` model from HuggingFace. 
+As one of the labs in the course [Building Generative AI-Powered Applications with Python](https://www.coursera.org/learn/building-gen-ai-powered-applications/home/welcome), it suggested to use the `gpt-4` model from OpenAI. Unfortunately, I was not able to get it to run without paying extra credits. There are other models that need sign-ups. As a result, I'm switching to use [`openchat/openchat-3.5-1210` model](https://huggingface.co/openchat/openchat_3.5) from HuggingFace. 
 
 
 1. Install python libraries 
-```
-pip install transformers accelerate torch
-```
+    ```
+    pip install transformers accelerate torch
+    ```
+
+2. To run:
+    ```
+    python3 3-chatpot.py
+    ```
 
 ### Reference
 - OpenAI APIs are not being used in my app, but here are some references I've looked up:
     - OpenAI repo: https://github.com/openai/openai-python
     - OpenAI docs: https://platform.openai.com/docs/overview
     - Get API key: https://platform.openai.com/settings/organization/api-keys
+- OpenChat: https://huggingface.co/openchat/openchat_3.5
 
 
 ## Step 4 - Putting everything together
+
+Now that we have created:
+- text-to-speech component using IBM Cloud's Text-To-Speech service
+- speech-to-text component using IBM Cloud's Speech-to-Text service
+- chatbat component using the OpenChat model
+
+Let's put everything together and create a voice assistant interface using Flask.
+
+The application is under [4-voice-agent folder](./4-voice-agent/). To run the application, go to that directory, run:
+```
+python3 app.py
+```
+
+Here is the demo: [demo](./VoiceAssitant-demo.mp4). I've edited the video to remove or speed up the waiting time. 
+
+I've made a few changes along the way:
+
+1. Use config file `.env` for API keys and service URLs
+
+In the previous steps, I use environment variables for the API keys and the service URLs. We only have 4 config properties in total, so it's still manageable, but it's better to switch to use `.env`.  In Python, `python-dotenv` provides an easy way to load the `.env` file into variables.
 
 ```
 pip install flask python-dotenv
 ```
 
-Read the API keys and service base urls from `.env` file instead of as an environment variable.
-Note: `.gitignore` is updated to make sure `.env` is not being pushed to GitHub.
+One thing to note is to make sure the `.env` file didn't get pushed to GitHub. `.gitignore` is updated to include that. 
 
-Project layout:
-```
-my_project/
- |- app.py
- |- templates/
-    |-- index.html
+2. Limit the number of tokens returned
+In [processmg.py](./4-voice-agent/processmsg.py), I intentionally limite the number of tokens returned. I reached the threshold of a free plan for the Text-to-Speech service. Since this is an experimental application, it works for me to reduce that number. 
 
-```
+When you hit the usage overlimit issue, you'll likely receive a "Forbidden" error message and can check your usage on IBM Cloud. Simply delete the existing service and create a new one. Make sure you update the API key and URL accordingly. 
+
+3. Future work
+- When calling the Text-to-Speech service, the audio is saved into a file. As a next step, it would be good to make it as a audio stream.
+- The UI is using JQuery which I'm not very familiar with. I'd like to eventually update it to use React or other more modern UI framework. 
